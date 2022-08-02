@@ -1,0 +1,9 @@
+@host = http://localhost:9292/api/v1
+
+GET {{host}}/todos
+Content-Type: application/json
+
+###
+
+GET {{host}}/todos/abc123
+Content-Type: application/json
