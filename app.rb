@@ -3,13 +3,19 @@
 require 'bundler/setup'
 require 'puma'
 require 'roda'
-require 'bridgetown-core'
-require 'bridgetown-core/rack/boot'
 require 'bridgetown'
 require_relative 'app/api'
-require_relative 'docs/server/roda_app'
 
-Bridgetown::Rack.boot
+# Set config object up before requiring Bridgetown Rack boot
+Bridgetown::Current.preloaded_configuration = Bridgetown.configuration(
+  root_dir: File.expand_path("docs", __dir__),
+  source: File.expand_path("docs/src", __dir__),
+  destination: File.expand_path("docs/output", __dir__),
+  base_path: "/" # we need to reset this from /docs to / because of the RodaApp mount point below
+)
+
+require 'bridgetown-core/rack/boot'
+Bridgetown::Rack.boot # this will automatically load ./docs/server/*.rb
 
 class App < Roda
   route do |r|
